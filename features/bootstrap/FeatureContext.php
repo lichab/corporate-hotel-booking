@@ -27,7 +27,8 @@ class FeatureContext implements Context
      */
     public function theEmployeeFromCompany(string $employee, string $company)
     {
-        $companyService = new CompanyService();
+        $employeeRepository = new EmployeeRepositoryInMemory();
+        $companyService = new CompanyService($employeeRepository);
         $companyService->addEmployee($company, $employee);
     }
 
