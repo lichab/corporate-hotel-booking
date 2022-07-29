@@ -1,0 +1,15 @@
+{
+    "name": "correspondence/team",
+    "type": "project",
+    "require-dev": {
+        "behat/behat": "^3.11"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Correspondence\\Team\\": "src/"
+        }
+    },
+    "minimum-stability": "stable",
+    "require": {}
+}
