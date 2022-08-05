@@ -10,5 +10,6 @@ final class EmployeeRepositoryInMemory implements EmployeeRepository
 {
     public function save(Employee $employee): void
     {
+        throw new \Exception('Implement this!');
     }
 }
