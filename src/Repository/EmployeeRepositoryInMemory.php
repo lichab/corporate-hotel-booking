@@ -8,8 +8,15 @@ use App\EmployeeRepository;
 
 final class EmployeeRepositoryInMemory implements EmployeeRepository
 {
+    private array $employees = [];
+
     public function save(Employee $employee): void
     {
-        throw new \Exception('Implement this!');
+        $this->employees[$employee->employeeId] = $employee;
+    }
+
+    public function get(string $id): ?Employee
+    {
+        return $this->employees[$id];
     }
 }
