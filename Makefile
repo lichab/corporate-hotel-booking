@@ -9,6 +9,9 @@ GID := $(shell id -g)
 export UID
 export GID
 
+.PHONY: all
+all: unit-test acceptance-test
+
 .PHONY: acceptance-test
 acceptance-test: vendor
 	docker-compose run --rm php vendor/bin/behat $(ARGS)

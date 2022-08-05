@@ -1,5 +1,6 @@
 <?php
 
+use App\Repository\EmployeeRepositoryInMemory;
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
