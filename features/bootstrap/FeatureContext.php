@@ -1,11 +1,12 @@
 <?php
 
 use App\Repository\EmployeeRepositoryInMemory;
+use App\Repository\HotelRepositoryInMemory;
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
-use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use App\CompanyService;
+use App\HotelService;
 
 /**
  * Defines application features from the specific context.
@@ -34,11 +35,17 @@ class FeatureContext implements Context
     }
 
     /**
-     * @Given the hotel :arg1 has the following rooms:
+     * @Given the hotel :hotelName has the following rooms:
      */
-    public function theHotelHasTheFollowingRooms($arg1, TableNode $table)
+    public function theHotelHasTheFollowingRooms($hotelName, TableNode $table)
     {
-        throw new PendingException();
+        $id = "foo";
+        $hotelRepository = new HotelRepositoryInMemory();
+        $hotelService = new HotelService($hotelRepository);
+        $hotelService->addHotel($id, $hotelName);
+        foreach ($table->getRows() as $row){
+            $hotelService->setRoom($id, $row[0], $row[1]);
+        }
     }
 
     /**
