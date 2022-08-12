@@ -3,6 +3,14 @@ Feature: Book a hotel room
     In order to do my job
     I need to book a room of a hotel
 
+    TODO: Review the scenarios and answer the following question =>
+        Are they following the BRIEF heuristic?
+        Business Language (aka Ubiquitous Language)
+        Real Data (based on real life example)
+        Intention Revealing (each steps describe intentions, what the user is trying to achieve, rather than the mechanics, how she is trying to achieve it)
+        Essential (Incidental details should be removed)
+        Focused (on a single rule)
+
     Scenario: Succesfully book a hotel room
         Given the employee "Bob" from company "Acme"
         And the hotel "Tortilla" has the following rooms:
