@@ -17,7 +17,7 @@ Feature: Book a hotel room
             | 1 | standard room |
             | 2 | standard room |
             | 3 | standard room |
-        When Bob books the room number 1 in hotel "Tortilla"
+        When Bob books a "standard room" in hotel "Tortilla" between "2022-09-15" to "2022-09-22"
         Then this room should be booked
 
     Scenario: Fail to book a hotel room when a company booking policy prevents me to do so

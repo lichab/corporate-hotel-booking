@@ -1,5 +1,6 @@
 <?php
 
+use App\Booking;
 use App\Repository\EmployeeRepositoryInMemory;
 use App\Repository\HotelRepositoryInMemory;
 use Behat\Behat\Tester\Exception\PendingException;
@@ -7,12 +8,17 @@ use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
 use App\CompanyService;
 use App\HotelService;
+use App\BookingService;
+use function PHPUnit\Framework\assertEquals;
 
 /**
  * Defines application features from the specific context.
  */
 class FeatureContext implements Context
 {
+    private array $employeeIds = [];
+    private array $hotelIds = [];
+
     /**
      * Initializes context.
      *
@@ -25,13 +31,14 @@ class FeatureContext implements Context
     }
 
     /**
-     * @Given the employee :employee from company :company
+     * @Given the employee :employeeName from company :company
      */
-    public function theEmployeeFromCompany(string $employee, string $company)
+    public function theEmployeeFromCompany(string $employeeName, string $company)
     {
+        $this->employeeIds[$employeeName] = $employeeId = $employeeName.'-id';
         $employeeRepository = new EmployeeRepositoryInMemory();
         $companyService = new CompanyService($employeeRepository);
-        $companyService->addEmployee($company, $employee);
+        $companyService->addEmployee($company, $employeeId);
     }
 
     /**
@@ -39,21 +46,38 @@ class FeatureContext implements Context
      */
     public function theHotelHasTheFollowingRooms($hotelName, TableNode $table)
     {
-        $id = "foo";
-        $hotelRepository = new HotelRepositoryInMemory();
-        $hotelService = new HotelService($hotelRepository);
-        $hotelService->addHotel($id, $hotelName);
+        $this->hotelIds[$hotelName] = $hotelId = $hotelName.'-id';
+        $hotelService = new HotelService();
+        $hotelService->addHotel($hotelId, $hotelName);
         foreach ($table->getRows() as $row){
-            $hotelService->setRoom($id, $row[0], $row[1]);
+            $hotelService->setRoom($hotelId, $row[0], $row[1]);
         }
     }
 
+    private string $bookedRoomHotelId;
+    private string $bookedRoomType;
+    private \DateTimeImmutable $bookedRoomCheckIn;
+    private \DateTimeImmutable $bookedRoomCheckOut;
+    private ?Booking $bookingConfirmation;
+
     /**
-     * @When Bob books the room number :arg2 in hotel :arg1
+     * @When :employeeName books a :roomType in hotel :hotelName between :checkIn to :checkOut
      */
-    public function bobBooksTheRoomNumberInHotel($arg1, $arg2)
+    public function bobBooksAInHotelBetweenTo(string $employeeName, string $roomType, string $hotelName, string $checkIn, string $checkOut): void
     {
-        throw new PendingException();
+        $this->bookedRoomHotelId = $this->hotelIds[$hotelName];
+        $this->bookedRoomType = $roomType;
+        $this->bookedRoomCheckIn = \DateTimeImmutable::createFromFormat('!Y-m-d', $checkIn);
+        $this->bookedRoomCheckOut = \DateTimeImmutable::createFromFormat('!Y-m-d', $checkOut);
+
+        $bookingService = new BookingService();
+        $this->bookingConfirmation = $bookingService->book(
+            $this->employeeIds[$employeeName],
+            $this->bookedRoomHotelId,
+            $this->bookedRoomType,
+            $this->bookedRoomCheckIn,
+            $this->bookedRoomCheckOut
+        );
     }
 
     /**
@@ -61,7 +85,10 @@ class FeatureContext implements Context
      */
     public function thisRoomShouldBeBooked()
     {
-        throw new PendingException();
+        assertEquals($this->bookedRoomHotelId, $this->bookingConfirmation->hotelId);
+        assertEquals($this->bookedRoomType, $this->bookingConfirmation->roomType);
+        assertEquals($this->bookedRoomCheckIn, $this->bookingConfirmation->checkIn);
+        assertEquals($this->bookedRoomCheckOut, $this->bookingConfirmation->checkOut);
     }
 
     /**

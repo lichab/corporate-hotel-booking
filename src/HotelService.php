@@ -14,4 +14,8 @@ class HotelService
     {
         $this->repository->save(new Hotel($id, $hotelName));
     }
+
+    public function setRoom(string $hotelId, string $number, string $roomType): void
+    {
+    }
 }
